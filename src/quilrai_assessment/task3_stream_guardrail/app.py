@@ -32,7 +32,11 @@ def _sse(delta: str) -> bytes:
 
 
 def create_app(provider: StreamingProvider | None = None) -> FastAPI:
-    client = httpx.AsyncClient(timeout=httpx.Timeout(30.0, read=300.0)) if provider is None else None
+    client = (
+        httpx.AsyncClient(timeout=httpx.Timeout(30.0, read=300.0))
+        if provider is None
+        else None
+    )
     active_provider = provider or HTTPStreamingProvider(
         os.getenv("LLM_STREAM_URL", "http://127.0.0.1:9301/v1/stream"),
         client,  # type: ignore[arg-type]

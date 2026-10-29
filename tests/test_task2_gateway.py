@@ -16,7 +16,10 @@ async def _client(role: str, downstream_handler):
         authenticator=JWTAuthenticator(SECRET),
         downstream_client=downstream,
     )
-    client = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://gateway.test")
+    client = httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app),
+        base_url="http://gateway.test",
+    )
     token = issue_demo_token(f"demo-{role}", role, SECRET)  # type: ignore[arg-type]
     return client, downstream, token
 
@@ -119,7 +122,10 @@ async def test_invalid_bearer_token_returns_jsonrpc_auth_error_without_forwardin
         authenticator=JWTAuthenticator(SECRET),
         downstream_client=downstream_client,
     )
-    client = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://gateway.test")
+    client = httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app),
+        base_url="http://gateway.test",
+    )
     try:
         response = await client.post(
             "/mcp",

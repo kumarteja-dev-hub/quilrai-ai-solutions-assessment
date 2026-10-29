@@ -6,8 +6,16 @@ from fastapi.responses import JSONResponse
 app = FastAPI(title="Mock downstream MCP server")
 
 TOOLS = [
-    {"name": "lookup_status", "description": "Read-only demo tool", "inputSchema": {"type": "object"}},
-    {"name": "admin_reset_key", "description": "Admin demo tool", "inputSchema": {"type": "object"}},
+    {
+        "name": "lookup_status",
+        "description": "Read-only demo tool",
+        "inputSchema": {"type": "object"},
+    },
+    {
+        "name": "admin_reset_key",
+        "description": "Admin demo tool",
+        "inputSchema": {"type": "object"},
+    },
 ]
 
 
@@ -21,9 +29,20 @@ async def mcp(request: Request) -> JSONResponse:
             {
                 "jsonrpc": "2.0",
                 "id": payload.get("id"),
-                "result": {"content": [{"type": "text", "text": f"called {payload.get('params', {}).get('name')}"}]},
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"called {payload.get('params', {}).get('name')}",
+                        }
+                    ]
+                },
             }
         )
     return JSONResponse(
-        {"jsonrpc": "2.0", "id": payload.get("id"), "error": {"code": -32601, "message": "Method not found"}}
+        {
+            "jsonrpc": "2.0",
+            "id": payload.get("id"),
+            "error": {"code": -32601, "message": "Method not found"},
+        }
     )

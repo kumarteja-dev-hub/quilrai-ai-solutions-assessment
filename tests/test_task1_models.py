@@ -34,5 +34,10 @@ def test_refund_rejects_short_reason_and_unknown_fields() -> None:
         TriggerRefundInput(customer_id="CUST-12345", amount=10.0, reason="too short")
     with pytest.raises(ValidationError):
         TriggerRefundInput.model_validate(
-            {"customer_id": "CUST-12345", "amount": 10.0, "reason": "long enough reason", "extra": True}
+            {
+                "customer_id": "CUST-12345",
+                "amount": 10.0,
+                "reason": "long enough reason",
+                "extra": True,
+            }
         )

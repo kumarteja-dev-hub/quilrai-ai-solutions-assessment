@@ -6,8 +6,6 @@ import logging
 import sys
 from typing import Any
 
-from pydantic import ValidationError
-
 from mcp import MCPError
 from mcp.server import NotificationOptions, Server, ServerRequestContext
 from mcp.server.stdio import stdio_server
@@ -20,6 +18,7 @@ from mcp.types import (
     TextContent,
     Tool,
 )
+from pydantic import ValidationError
 
 from .models import GetCustomerRecordInput, TriggerRefundInput
 from .service import create_refund, get_customer

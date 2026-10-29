@@ -23,7 +23,9 @@ class HTTPStreamingProvider:
         self.client = client
 
     async def stream(self, prompt: str) -> AsyncIterator[str]:
-        async with self.client.stream("POST", self.url, json={"prompt": prompt, "stream": True}) as response:
+        async with self.client.stream(
+            "POST", self.url, json={"prompt": prompt, "stream": True}
+        ) as response:
             response.raise_for_status()
             async for line in response.aiter_lines():
                 if not line:

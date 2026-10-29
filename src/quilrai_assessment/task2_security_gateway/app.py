@@ -3,8 +3,8 @@ from __future__ import annotations
 import logging
 import os
 import sys
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 import httpx
 from fastapi import FastAPI, Header, HTTPException, Request
@@ -76,7 +76,7 @@ def create_app(
             )
 
         status, body = await gateway.handle(payload, principal)
-        if isinstance(body, (dict, list)):
+        if isinstance(body, dict | list):
             return JSONResponse(status_code=status, content=body)
         return Response(status_code=status, content=str(body))
 

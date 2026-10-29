@@ -6,6 +6,7 @@ import math
 import os
 import sqlite3
 import time
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
@@ -89,7 +90,8 @@ class SQLiteSlidingWindowRateLimiter:
             conn.execute("BEGIN IMMEDIATE")
             conn.execute("DELETE FROM token_events WHERE created_at <= ?", (cutoff,))
             rows = conn.execute(
-                "SELECT tokens, created_at FROM token_events WHERE tenant_key = ? ORDER BY created_at ASC",
+                "SELECT tokens, created_at FROM token_events "
+                "WHERE tenant_key = ? ORDER BY created_at ASC",
                 (tenant_key,),
             ).fetchall()
             used = sum(int(row["tokens"]) for row in rows)
@@ -114,7 +116,8 @@ class SQLiteSlidingWindowRateLimiter:
                 )
 
             conn.execute(
-                "INSERT INTO token_events(reservation_id, tenant_key, tokens, created_at) VALUES (?, ?, ?, ?)",
+                "INSERT INTO token_events(reservation_id, tenant_key, tokens, created_at) "
+                "VALUES (?, ?, ?, ?)",
                 (reservation_id, tenant_key, tokens, now),
             )
             conn.execute("COMMIT")
@@ -124,10 +127,8 @@ class SQLiteSlidingWindowRateLimiter:
                 remaining_tokens=max(0, self.limit_tokens - used - tokens),
             )
         except Exception:
-            try:
+            with suppress(sqlite3.Error):
                 conn.execute("ROLLBACK")
-            except sqlite3.Error:
-                pass
             raise
         finally:
             conn.close()
@@ -146,10 +147,8 @@ class SQLiteSlidingWindowRateLimiter:
             )
             conn.execute("COMMIT")
         except Exception:
-            try:
+            with suppress(sqlite3.Error):
                 conn.execute("ROLLBACK")
-            except sqlite3.Error:
-                pass
             raise
         finally:
             conn.close()

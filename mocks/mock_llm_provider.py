@@ -50,7 +50,10 @@ async def _completion(request: Request, provider: str) -> JSONResponse:
         {
             "text": text,
             "model": f"mock-{provider}",
-            "usage": {"input_tokens": max(1, len(prompt) // 4), "output_tokens": max(1, len(text) // 4)},
+            "usage": {
+                "input_tokens": max(1, len(prompt) // 4),
+                "output_tokens": max(1, len(text) // 4),
+            },
         }
     )
 

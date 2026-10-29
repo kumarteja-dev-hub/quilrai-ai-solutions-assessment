@@ -4,7 +4,11 @@ import asyncio
 
 import pytest
 
-from quilrai_assessment.task4_model_router.errors import GatewayError, ProviderFailure, ProviderRateLimited
+from quilrai_assessment.task4_model_router.errors import (
+    GatewayError,
+    ProviderFailure,
+    ProviderRateLimited,
+)
 from quilrai_assessment.task4_model_router.models import CompletionRequest, ProviderResult
 from quilrai_assessment.task4_model_router.rate_limiter import SQLiteSlidingWindowRateLimiter
 from quilrai_assessment.task4_model_router.router import ResilientModelRouter
@@ -32,7 +36,12 @@ class Provider:
         return ProviderResult(text="ok", input_tokens=3, output_tokens=4, model=self.name)
 
 
-def router(tmp_path, primary: Provider, secondary: Provider, timeout: float = 0.05) -> ResilientModelRouter:
+def router(
+    tmp_path,
+    primary: Provider,
+    secondary: Provider,
+    timeout: float = 0.05,
+) -> ResilientModelRouter:
     limiter = SQLiteSlidingWindowRateLimiter(str(tmp_path / "limits.db"), 50_000, 60)
     return ResilientModelRouter(primary, secondary, limiter, timeout)
 

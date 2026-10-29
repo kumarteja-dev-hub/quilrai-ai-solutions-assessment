@@ -29,7 +29,8 @@ class BackupProvider:
 async def test_http_error_payload_is_standardized_and_sanitized(tmp_path) -> None:
     limiter = SQLiteSlidingWindowRateLimiter(str(tmp_path / "limits.db"))
     app = create_app(FailingProvider(), BackupProvider(), limiter)
-    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.post(
             "/v1/completions",
             headers={"X-API-Key": "tenant-a"},
