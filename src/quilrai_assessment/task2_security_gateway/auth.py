@@ -25,7 +25,7 @@ class JWTAuthenticator:
         self.algorithm = algorithm
 
     @classmethod
-    def from_env(cls) -> "JWTAuthenticator":
+    def from_env(cls) -> JWTAuthenticator:
         return cls(os.getenv("JWT_SECRET", "dev-only-change-me-please"))
 
     def authenticate_header(self, authorization: str | None) -> Principal:
